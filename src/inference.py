@@ -117,7 +117,7 @@ def handler(event: Dict[str, Any]) -> Dict[str, Any]:
         
         height = input_data.get("height", 1024)
         width = input_data.get("width", 1024)
-        num_inference_steps = input_data.get("num_inference_steps", 8)
+        num_inference_steps = input_data.get("num_inference_steps", 9)
         guidance_scale = input_data.get("guidance_scale", 0.0)
         seed = input_data.get("seed")
         return_base64 = input_data.get("return_base64", True)
