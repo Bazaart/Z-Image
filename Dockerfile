@@ -1,4 +1,6 @@
-FROM pytorch/pytorch:2.9.1-cuda12.6-cudnn9-runtime
+# Use PyTorch image with CUDA 12.8 for RTX 5090 (Blackwell, sm_120) support
+# This image already includes PyTorch compiled with CUDA 12.8 kernels
+FROM pytorch/pytorch:2.7.1-cuda12.8-cudnn9-runtime
 
 WORKDIR /app
 
