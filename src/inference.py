@@ -3,6 +3,7 @@
 import base64
 import io
 import os
+import runpod
 import time
 import warnings
 from typing import Dict, Any, Optional
@@ -172,46 +173,5 @@ def handler(event: Dict[str, Any]) -> Dict[str, Any]:
         }
 
 
-def main():
-    """Local testing function (for development)."""
-    model_path = ensure_model_weights("ckpts/Z-Image-Turbo", verify=False)
-    dtype = torch.bfloat16
-    compile = False  # default False for compatibility
-    output_path = "example.png"
-    height = 1024
-    width = 1024
-    num_inference_steps = 8
-    guidance_scale = 0.0
-    seed = 42
-    attn_backend = os.environ.get("ZIMAGE_ATTENTION", "_native_flash")
-    prompt = (
-        "Young Chinese woman in red Hanfu, intricate embroidery. Impeccable makeup, red floral forehead pattern. "
-        "Elaborate high bun, golden phoenix headdress, red flowers, beads. Holds round folding fan with lady, trees, bird. "
-        "Neon lightning-bolt lamp (⚡️), bright yellow glow, above extended left palm. Soft-lit outdoor night background, "
-        "silhouetted tiered pagoda (西安大雁塔), blurred colorful distant lights."
-    )
-
-    # Initialize model
-    initialize_model(model_path, dtype=dtype, compile=compile, attn_backend=attn_backend)
-
-    # Generate image
-    start_time = time.time()
-    images = generate(
-        prompt=prompt,
-        **_components,
-        height=height,
-        width=width,
-        num_inference_steps=num_inference_steps,
-        guidance_scale=guidance_scale,
-        generator=torch.Generator(_device).manual_seed(seed),
-    )
-    end_time = time.time()
-    print(f"Time taken: {end_time - start_time:.2f} seconds")
-    images[0].save(output_path)
-
-    ### !! For best speed performance, recommend to use `_flash_3` backend and set `compile=True`
-    ### This would give you sub-second generation speed on Hopper GPU (H100/H200/H800) after warm-up
-
-
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    runpod.serverless.start({"handler": handler})

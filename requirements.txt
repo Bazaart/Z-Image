@@ -4,3 +4,4 @@ loguru
 pillow
 accelerate
 huggingface_hub>=0.25.0
+runpod
