@@ -6,6 +6,7 @@ import os
 import runpod
 import time
 import warnings
+from pathlib import Path
 from typing import Dict, Any, Optional
 
 import torch
@@ -34,7 +35,25 @@ def initialize_model(
         return
     
     if model_path is None:
-        model_path = ensure_model_weights("ckpts/Z-Image-Turbo", verify=False)
+        # Check for local Hugging Face cache first
+        hf_cache_path = Path("/runpod-volume/huggingface-cache/hub/models/Tongyi-MAI--Z-Image-Turbo/snapshots")
+        
+        if hf_cache_path.exists():
+            # Find the snapshot subdirectory (usually contains a commit hash)
+            snapshots = [d for d in hf_cache_path.iterdir() if d.is_dir()]
+            if snapshots:
+                # Use the most recently modified snapshot directory
+                snapshot = max(snapshots, key=lambda p: p.stat().st_mtime)
+                model_path = str(snapshot)
+                print(f"Found model in Hugging Face cache: {model_path}")
+            else:
+                # If snapshots directory exists but is empty, use it directly
+                model_path = str(hf_cache_path)
+                print(f"Using Hugging Face cache directory: {model_path}")
+        else:
+            # Fall back to downloading via ensure_model_weights
+            print("Local cache not found, downloading model...")
+            model_path = ensure_model_weights("ckpts/Z-Image-Turbo", verify=False)
     
     if attn_backend is None:
         attn_backend = os.environ.get("ZIMAGE_ATTENTION", "_native_flash")
