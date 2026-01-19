@@ -21,13 +21,6 @@ _device = None
 _dtype = torch.bfloat16
 
 
-def list_files_pathlib_rglob(directory_path):
-    """Lists all files in a directory and its subdirectories using pathlib.rglob()."""
-    # The "*" pattern matches all files and directories recursively
-    files = [str(file_path.resolve()) for file_path in directory_path.rglob('*') if file_path.is_file()]
-    return files
-
-
 def initialize_model(
     model_path: Optional[str] = None,
     dtype: torch.dtype = torch.bfloat16,
@@ -43,11 +36,7 @@ def initialize_model(
     
     if model_path is None:
         # Check for local Hugging Face cache first
-        hf_cache_path = Path("/runpod-volume/huggingface-cache/hub/models--Tongyi-MAI--Z-Image-Turbo/snapshots")
-
-        all_files = list_files_pathlib_rglob(hf_cache_path)
-        for file in all_files:
-            print(file)
+        hf_cache_path = Path("/runpod-volume/huggingface-cache/hub/models--tongyi-mai--z-image-turbo/snapshots")
         
         if hf_cache_path.exists():
             # Find the snapshot subdirectory (usually contains a commit hash)
