@@ -36,7 +36,7 @@ def initialize_model(
     
     if model_path is None:
         # Check for local Hugging Face cache first
-        hf_cache_path = Path("/runpod-volume/huggingface-cache/hub/models/Tongyi-MAI--Z-Image-Turbo/snapshots")
+        hf_cache_path = Path("/runpod-volume/huggingface-cache/hub/models--Tongyi-MAI--Z-Image-Turbo/snapshots")
         
         if hf_cache_path.exists():
             # Find the snapshot subdirectory (usually contains a commit hash)
